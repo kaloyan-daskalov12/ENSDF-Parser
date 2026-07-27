@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ENSDF Parser App/ENSDF Parser App.csproj" />
+  <Project Path="ENSDF Parser/ENSDF Parser.csproj" />
+</Solution>

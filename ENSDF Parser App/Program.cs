@@ -1,0 +1,13 @@
+﻿using UserInterface;
+using UserInterface.IO;
+
+namespace ENSDF_Parser_App
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            
+        }
+    }
+}

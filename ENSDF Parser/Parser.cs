@@ -74,11 +74,10 @@ namespace ENSDF_Parser
 
             // Production Normalization record:
             // col 7 = P, col 8 = N
-            // You don't currently have a ProductionNormalizationRecord class,
-            // so this falls back to NormalizationRecord for now.
+            // ProductionNormalizationRecord class
             if (rtype.C2 == 'P' && rtype.C3 == 'N')
             {
-                return new NormalizationRecord(id, rtype, line);
+                return new ProductionNormalizationRecord(id, rtype, line);
             }
 
             // Particle or delayed-particle record:

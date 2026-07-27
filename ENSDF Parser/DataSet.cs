@@ -22,6 +22,8 @@ namespace ENSDF_Parser
         void DistributeRecords(List<Record> records)
         {
             Level currentLevel = null;
+            PNPair currentNormalizationPair = null;
+
             foreach (var r in records)
             {
                 switch (r)
@@ -117,16 +119,68 @@ namespace ENSDF_Parser
                         else UnplacedRecords.DelayedParticleRecords.Add(d);
                         break;
                     case ParentRecord p:
-                        Header.PN_Pairs.Add(new PNPair() { Parent = p });
-                        break;
-                    case NormalizationRecord n:
-                        if (n.RType.C4 == ' ')
                         {
-                            Header.PN_Pairs[^1].Normalization = n;
+                            var pair = new PNPair
+                            {
+                                Parent = p
+                            };
+
+                            Header.PN_Pairs.Add(pair);
                             break;
                         }
-                        foreach (var pair in Header.PN_Pairs) if (pair.Parent.RType.C4 == n.RType.C4) pair.Normalization = n;
-                        break;
+
+                    case NormalizationRecord n:
+                        {
+                            currentNormalizationPair = null;
+
+                            // A blank designator associates the N record with
+                            // the most recently encountered P record.
+                            if (n.RType.C4 == ' ')
+                            {
+                                if (Header.PN_Pairs.Count != 0)
+                                {
+                                    currentNormalizationPair = Header.PN_Pairs[^1];
+                                    currentNormalizationPair.Normalization = n;
+                                }
+                                else
+                                {
+                                    Header.UnpairedNormalizationRecords.Add(n);
+                                }
+                                break;
+                            }
+
+                            // With multiple parents, column 9 identifies
+                            // the corresponding P record.
+                            foreach (var pair in Header.PN_Pairs)
+                            {
+                                if (pair.Parent?.RType.C4 == n.RType.C4)
+                                {
+                                    pair.Normalization = n;
+                                    currentNormalizationPair = pair;
+                                    break;
+                                }
+                            }
+
+                            break;
+                        }
+
+                    case ProductionNormalizationRecord pn:
+                        {
+                            // According to the ENSDF format, PN immediately follows
+                            // the N record to which it belongs.
+                            if (currentNormalizationPair != null)
+                            {
+                                currentNormalizationPair.ProductionNormalization = pn;
+                            }
+                            else
+                            {
+                                // This needs a separate collection because an N/PN record
+                                // can also appear in a non-decay data set without a P record.
+                                Header.UnpairedProductionNormalizationRecords.Add(pn);
+                            }
+
+                            break;
+                        }
                     case QValueRecord q:
                         Header.QValueRecords.Add(q);
                         break;

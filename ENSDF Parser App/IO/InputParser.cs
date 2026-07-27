@@ -178,7 +178,7 @@ namespace UserInterface.IO
             return 0;
         }
 
-        public static (string? KeyWord, List<string>? Indexes, bool Success) ParseIndexes(string input)
+        static (string? KeyWord, List<string>? Indexes, bool Success) ParseIndexes(string input)
         {
             if (input == "" || !input.Contains('[') || !input.Contains(']')) return (input, null, false);
             int i = 0;

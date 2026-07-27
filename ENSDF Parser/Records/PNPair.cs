@@ -15,14 +15,20 @@ namespace ENSDF_Parser.Records
 
         public override string ToString()
         {
-            if (Parent is null)
-                return Normalization?.ToString() ?? string.Empty;
+            var records = new List<Record>();
 
-            if (Normalization is null)
-                return Parent.ToString();
+            if (Parent != null)
+                records.Add(Parent);
 
-            return Parent.ToString()
-                + Normalization.ToString();
+            if (Normalization != null)
+                records.Add(Normalization);
+
+            if (ProductionNormalization != null)
+                records.Add(ProductionNormalization);
+
+            return string.Join(
+                Environment.NewLine,
+                records.Select(r => r.ToString()));
         }
     }
 }

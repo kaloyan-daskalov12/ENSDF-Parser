@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ENSDF_Parser
+namespace ENSDF_Parser.Extractor
 {
     public class Value
     {
@@ -25,6 +25,11 @@ namespace ENSDF_Parser
         {
             units = LeastSignificantUnit(val);
             Val = double.Parse(val);
+        }
+
+        public (string val, string dval) GetString()
+        {
+            return (Val.ToString(), (DVal / units).ToString());
         }
 
         static double LeastSignificantUnit(string s)

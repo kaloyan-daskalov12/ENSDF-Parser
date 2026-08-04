@@ -11,10 +11,11 @@ namespace ENSDF_Parser
 {
     public class DataSet
     {
-        public DataSet(Identifier id, List<Record> records)
+        public DataSet(Identifier id, List<Record> records, string file)
         {
             Id = id;
             OrderedRecords = records;
+            File = file;
 
             DistributeRecords(records);
         }
@@ -196,13 +197,15 @@ namespace ENSDF_Parser
 
         public string GetOverview()
         {
-            return $"Element: {Id.Name} #{Id.Isotrope}; Recorded Levels: {Levels.Count}";
+            return $"File: {File}; Element: {Id}; Recorded Levels: {Levels.Count}";
         }
 
-        public Identifier Id;
-        public Header Header = new();
-        public RadiationData UnplacedRecords = new();
-        public List<Level> Levels = new();
+        public string File;
+
+        public Identifier Id { get; }
+        public Header Header { get; } = new();
+        public RadiationData UnplacedRecords { get; } = new();
+        public List<Level> Levels { get; } = new();
 
         List<Record> OrderedRecords;
         public override string ToString()

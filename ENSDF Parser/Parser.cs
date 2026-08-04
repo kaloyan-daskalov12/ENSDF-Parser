@@ -10,7 +10,7 @@ namespace ENSDF_Parser
 {
     public class Parser
     {
-        public static List<DataSet> Parse(List<string> lines)
+        public static List<DataSet> Parse(List<string> lines, string file)
         {
             List<DataSet> sets = new List<DataSet>();
             List<Record> records = new List<Record>();
@@ -20,7 +20,7 @@ namespace ENSDF_Parser
                 {
                     if (records.Count != 0)
                     {
-                        sets.Add(new DataSet(records[0].Id, records));
+                        sets.Add(new DataSet(records[0].Id, records, file));
                         records = new List<Record>();
                     }
                 }

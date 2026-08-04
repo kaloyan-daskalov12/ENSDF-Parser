@@ -1,7 +1,4 @@
-﻿using UserInterface;
-using UserInterface.IO;
-
-namespace ENSDF_Parser_App
+﻿namespace ENSDF_Parser_App
 {
     internal class Program
     {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using ENSDF_Parser.MetaData;
 using ENSDF_Parser.Records;
 
-namespace ENSDF_Parser
+namespace ENSDF_Parser.Extractor
 {
     public class ValueExtractor
     {

@@ -4,7 +4,8 @@
     {
         static void Main(string[] args)
         {
-            
+            UIApp app = new UIApp();
+            app.RunConsoleSession();
         }
     }
 }

@@ -37,7 +37,7 @@ namespace ENSDF_Parser_App
             foreach (Value v in values)
             {
                 var str = v.GetString();
-                text += template.Replace("val", str.val).Replace("dval", str.dval);
+                text += template.Replace("dval", str.dval).Replace("val", str.val) + '\n';
             }
             return text;
         }
@@ -52,8 +52,8 @@ namespace ENSDF_Parser_App
             {
                 if (c == closingToken)
                 {
-                    current += c;
-                    tokens.Enqueue(current);
+                    if (closingToken != ' ') current += c;
+                    if (current != "") tokens.Enqueue(current);
                     current = "";
                     closingToken = ' ';
                 }
@@ -78,6 +78,7 @@ namespace ENSDF_Parser_App
                     current += c;
                 }
             }
+            if (current != "") tokens.Enqueue(current);
 
             return tokens;
         }

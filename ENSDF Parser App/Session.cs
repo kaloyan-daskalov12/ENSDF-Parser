@@ -27,24 +27,28 @@ namespace ENSDF_Parser_App
         Selection RootSelection {  get; set; }
         Selection CurrentSelection { get { return RootSelection.GetLast(); } }
         Stack<Selection> SelectionStack { get; }
-        void ResetSelection()
+        public void ResetSelection()
         {
-            RootSelection = new Selection("dataset", Dataset);
+            RootSelection = new Selection("root", Dataset);
         }
-        void MakeTemporarySelection()
+        public void MakeTemporarySelection()
         {
             SelectionStack.Push(RootSelection);
             ResetSelection();
         }
-        void CloneCurrentSelection()
+        public void CloneCurrentSelection()
         {
             SelectionStack.Push(RootSelection);
             RootSelection = RootSelection.Clone();
         }
-        void RestoreSelection()
+        public void RestoreSelection()
         {
             if (SelectionStack.Count == 0) return;
             else RootSelection = SelectionStack.Pop();
+        }
+        public string GetCurrentSelection()
+        {
+            return RootSelection.ToString();
         }
 
         void ApplyPath(List<string> path)
@@ -53,6 +57,11 @@ namespace ENSDF_Parser_App
             {
                 CurrentSelection.SelectSubitem(s);
             }
+        }
+
+        public string Dir()
+        {
+            return string.Join("\n", CurrentSelection.GetProperties());
         }
 
         public object GetValue(string prop)
@@ -100,6 +109,11 @@ namespace ENSDF_Parser_App
 
         public void Select(string prop)
         {
+            if (prop == "..")
+            {
+                if (!RootSelection.RemoveLast()) ResetSelection();
+                return;
+            }
             List<string> path = Tools.ParsePath(prop);
             if (path.Count == 0) throw new Exception($"You have to specify an object to select!");
             if (path[0].Contains("dataset"))
@@ -174,10 +188,12 @@ namespace ENSDF_Parser_App
                 {
                     foreach(var g in l.Value)
                     {
-                        File.WriteAllText(Path.Combine(valuePath, $"Dataset:{v.Key.File}", $"Level:{l.Key.LevelRecord.E}", $"Gamma:{g.Key.E}"), Tools.ValuesToString(g.Value, template));
+                        string path = Path.Combine(valuePath, $"Dataset-{v.Key.File}", $"Level-{l.Key.LevelRecord.E}");
+                        Directory.CreateDirectory(path);
+                        File.WriteAllText(Path.Combine(path, $"Gamma-{g.Key.E}.txt"), Tools.ValuesToString(g.Value, template));
                     }
                 }
-                File.WriteAllText(Path.Combine(logPath, $"Dataset-{v.Key.File}"), string.Join('\n', v.Value.FoundErrors));
+                File.WriteAllText(Path.Combine(logPath, $"Dataset-{v.Key.File}.txt"), string.Join('\n', v.Value.FoundErrors));
             }
         }
     }

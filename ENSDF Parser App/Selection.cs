@@ -15,9 +15,9 @@ namespace ENSDF_Parser_App
             Name = name;
             Item = obj;
         }
-        public string Name { get; }
+        public string Name { get; private set; }
 
-        public object Item { get; }
+        public object Item { get; private set; }
 
         public Selection? Next { get; private set; }
 
@@ -32,7 +32,7 @@ namespace ENSDF_Parser_App
                 return new string[] { $"The list contains {ilist.Count} elements!" };
             }
             PropertyInfo[] properties = Item.GetType().GetProperties();
-            return properties.Select(p => $"[{p.GetType().Name}] {p.Name}").ToArray();
+            return properties.Select(p => $"[{p.GetValue(Item).GetType().Name}] {p.Name}").ToArray();
         }
 
         /// <summary>
@@ -56,9 +56,9 @@ namespace ENSDF_Parser_App
                     if (index >= ilist.Count || index < 0) throw new Exception($"The index {index} is out of range of {Name} entities!");
                     obj = ilist[index];
                     if (obj.GetType().IsPrimitive) throw new Exception($"Object of primitive type \"{obj.GetType().Name}\" can't be selected! Use \"set\" to assign value to it, or use \"show\" to see it's value!");
-                    s = new Selection(name, obj);
-                    Next = s;
-                    return s;
+                    Item = obj;
+                    Name = ((target.KeyWord == "") ? Name : target.KeyWord) + $"[{target.Args[0]}]";
+                    return this;
                 }
                 else throw new Exception("The currently selected item is with a type of List; Select a specific item first!");
             }
@@ -112,6 +112,17 @@ namespace ENSDF_Parser_App
         {
             if (Next == null) return this;
             else return Next.GetLast();
+        }
+
+        public bool RemoveLast()
+        {
+            if (Next == null) return false;
+            if (Next.Next == null) 
+            {
+                Next = null;
+                return true; 
+            }
+            else return Next.RemoveLast();
         }
 
         public override string ToString()

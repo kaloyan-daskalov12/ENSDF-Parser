@@ -11,31 +11,6 @@ using static System.Collections.Specialized.BitVector32;
 
 namespace ENSDF_Parser_App
 {
-    /*
-     Return codes specify the command
-    -1) parse file <file_path> /loads the file parsed
-    -2) parse gcv * r|k <field_identifier> <list: breakers> /parse the values from gamma comments
-    -2) parse gcv datasets[<dataset numbers>] /r\/k <field_identifier> <list: breakers> /parse the values from gamma comments
-    3) show datasets /shows the parsed datasets in the current buffer
-    4) show datasets[<list: number>] /gives info for the specified dataset
-    5) show <field> /shows the field of the selected item
-    5*) show <object>.<field>
-    6) show gcv /shows the parsed values from gamma comments as collections
-    7) show gcv[<number>] *<format>(use "val" for the value and "dval" for the uncertainty
-    8) select dataset[<number>] /selects the current dataset to work with
-    9) select <object> /selects the current working item
-    10) modify <field> <new_value> /modifies the field of the selected item *all values are strings*
-    10*) modify <object>.<field> <new_value>
-    11) save datasets <file_path>
-    12) save datasets[<list: number>] <file_path>
-    13) save gcv <directory> *<format>
-    13) save gcv[<list: number>] <directory> *<format>
-
-    Error codes:
-    1 - Wrong command/syntax
-    2 - Arguments are required, but arent set correctly
-    3 - Arguments are set correctly, but are out of range
-    */
     internal class InputParser
     {
         public static byte Execute(string command, Session session)
@@ -58,7 +33,8 @@ namespace ENSDF_Parser_App
 
         private static byte Dir(Queue<string> args, Session session)
         {
-            throw new NotImplementedException();
+            Console.WriteLine(session.Dir());
+            return 0;
         }
 
         static Dictionary<string, Func<Queue<string>, Session, byte>> ParseCommand = new()
@@ -103,7 +79,7 @@ namespace ENSDF_Parser_App
 
         static byte Select(Queue<string> args, Session session)
         {
-            string path = args.Dequeue();
+            string path = string.Join("", args);
             session.Select(path);
 
             return 0;
@@ -119,25 +95,11 @@ namespace ENSDF_Parser_App
             return 0;
         }
 
-        static Dictionary<string, Func<Queue<string>, Session, byte>> SaveCommand = new()
-        {
-            { "datasets", (Queue<string> args, Session session) => SaveDatasets(args, session) },
-            { "gcv", (Queue<string> args, Session session) => SaveGCV(args, session) }
-        };
-
-        private static byte SaveGCV(Queue<string> args, Session session)
-        {
-            throw new NotImplementedException();
-        }
-
-        private static byte SaveDatasets(Queue<string> args, Session session)
-        {
-            throw new NotImplementedException();
-        }
-
         static byte Save(Queue<string> args, Session session)
         {
-
+            string type = args.Dequeue();
+            if (type.Contains("dataset")) session.SaveDatasets(Tools.ParseSquareBrackets(type).Args.Select(int.Parse).ToList(), args.Dequeue().Replace("\"", ""));
+            if (type == "gcv") session.SaveParsedValues(args.Dequeue().Replace("\"", ""), args.Dequeue().Replace("\"", ""));
             return 0;
         }
 

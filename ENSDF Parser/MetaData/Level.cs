@@ -7,7 +7,7 @@ namespace ENSDF_Parser.MetaData
 {
     public class Level
     {
-        public LevelRecord LevelRecord;
-        public RadiationData Data = new();
+        public LevelRecord LevelRecord { get; set; }
+        public RadiationData Data { get; } = new();
     }
 }

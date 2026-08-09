@@ -16,9 +16,9 @@ namespace ENSDF_Parser.Records
             Comments = new List<CommentRecord>();
         }
 
-        public Identifier Id;
-        public RecordType RType;
-        public List<CommentRecord> Comments;
+        public Identifier Id { get; }
+        public RecordType RType { get; }
+        public List<CommentRecord> Comments { get; }
 
         public override string ToString()
         {

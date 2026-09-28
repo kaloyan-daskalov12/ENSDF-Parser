@@ -10,7 +10,7 @@ namespace ENSDF_Parser.Records
     public class CommentRecord : Record
     {
         public CommentRecord(Identifier id, RecordType rtype, string line)
-            : base(id, rtype)
+            : base(id, rtype, line)
         {
             CTEXT = line.Substring(9, 71);
         }
@@ -24,7 +24,7 @@ namespace ENSDF_Parser.Records
 
         public override string ToString()
         {
-            return base.ToString()
+            return $"{Id}{RType}"
                 + FormatToNChars(CTEXT, 71);
         }
     }

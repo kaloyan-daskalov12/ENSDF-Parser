@@ -13,7 +13,7 @@ namespace ENSDF_Parser.Records
             Identifier id,
             RecordType rtype,
             string line)
-            : base(id, rtype)
+            : base(id, rtype, line)
         {
             Particle = line.Substring(8, 1);
             E = line.Substring(9, 10);
@@ -115,7 +115,7 @@ namespace ENSDF_Parser.Records
 
         public override string ToString()
         {
-            return base.ToString().Substring(0, 8)
+            return $"{Id}{RType}".Substring(0, 8)
                 + FormatToNChars(Particle, 1)
                 + FormatToNChars(E, 10)
                 + FormatToNChars(DE, 2)

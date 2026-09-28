@@ -96,8 +96,8 @@ namespace ENSDF_Parser
                         Header.IdentificationRecords.Add(i);
                         break;
                     case LevelRecord l:
-                        if (currentLevel != null) Levels.Add(currentLevel);
                         currentLevel = new Level() { LevelRecord = l };
+                        Levels.Add(currentLevel);
                         break;
                     case GammaRecord g:
                         if (currentLevel != null) currentLevel.Data.GammaRecords.Add(g);
@@ -210,7 +210,7 @@ namespace ENSDF_Parser
         List<Record> OrderedRecords;
         public override string ToString()
         {
-            return string.Join("\n", OrderedRecords) + $"\n{new string(' ', 85)}";
+            return string.Join("\n", OrderedRecords) + $"\n{new string(' ', 80)}\n";
         }
     }
 }

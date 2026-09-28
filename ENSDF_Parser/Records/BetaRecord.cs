@@ -10,7 +10,7 @@ namespace ENSDF_Parser.Records
     public class BetaRecord : Record
     {
         public BetaRecord(Identifier id, RecordType rtype, string line)
-            : base(id, rtype)
+            : base(id, rtype, line)
         {
             E = line.Substring(9, 10);
             DE = line.Substring(19, 2);
@@ -88,7 +88,7 @@ namespace ENSDF_Parser.Records
 
         public override string ToString()
         {
-            return base.ToString()
+            return $"{Id}{RType}"
                 + FormatToNChars(E, 10)
                 + FormatToNChars(DE, 2)
                 + FormatToNChars(IB, 8)

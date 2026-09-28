@@ -10,7 +10,7 @@ namespace ENSDF_Parser.Records
     public class QValueRecord : Record
     {
         public QValueRecord(Identifier id, RecordType rtype, string line)
-            : base(id, rtype)
+            : base(id, rtype, line)
         {
             Q = line.Substring(9, 10);
             DQ = line.Substring(19, 2);
@@ -88,7 +88,7 @@ namespace ENSDF_Parser.Records
 
         public override string ToString()
         {
-            return base.ToString()
+            return $"{Id}{RType}"
                 + FormatToNChars(Q, 10)
                 + FormatToNChars(DQ, 2)
                 + FormatToNChars(SN, 8)

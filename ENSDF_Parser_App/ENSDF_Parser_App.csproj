@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ENSDF Parser\ENSDF Parser.csproj" />
+    <ProjectReference Include="..\ENSDF_Parser\ENSDF_Parser.csproj" />
   </ItemGroup>
 
 </Project>

@@ -13,7 +13,7 @@ namespace ENSDF_Parser.Records
             Identifier id,
             RecordType rtype,
             string line)
-            : base(id, rtype)
+            : base(id, rtype, line)
         {
             DSID = line.Substring(9, 30);
             DSREF = line.Substring(39, 26);
@@ -51,7 +51,7 @@ namespace ENSDF_Parser.Records
 
         public override string ToString()
         {
-            return base.ToString()
+            return $"{Id}{RType}"
                 + FormatToNChars(DSID, 30)
                 + FormatToNChars(DSREF, 26)
                 + FormatToNChars(PUB, 9)

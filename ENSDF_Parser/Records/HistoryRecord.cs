@@ -10,7 +10,7 @@ namespace ENSDF_Parser.Records
     public class HistoryRecord : Record
     {
         public HistoryRecord(Identifier id, RecordType rtype, string line)
-            : base(id, rtype)
+            : base(id, rtype, line)
         {
             HTEXT = line.Substring(9, 71);
         }
@@ -24,7 +24,7 @@ namespace ENSDF_Parser.Records
 
         public override string ToString()
         {
-            return base.ToString()
+            return $"{Id}{RType}"
                 + FormatToNChars(HTEXT, 71);
         }
     }

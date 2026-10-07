@@ -14,28 +14,51 @@ namespace ENSDF_Parser
         {
             List<DataSet> sets = new List<DataSet>();
             List<Record> records = new List<Record>();
-            foreach (var l in lines)
+
+            for (int i = 0; i < lines.Count; i++)
             {
-                if (l == "" || l.Replace(" ", "") == "")
+                string line = lines[i];
+
+                if (line == "" || line.Replace(" ", "") == "")
                 {
-                    if (records.Count != 0)
+                    if (records.Count > 0)
                     {
                         sets.Add(new DataSet(records[0].Id, records, file));
                         records = new List<Record>();
                     }
+
+                    continue;
                 }
-                else records.Add(RecognizePattern(ParseId(l.Substring(0, 5)), ParseRecType(l.Substring(5, 4)), l));
+
+                if (line.Length < 80)
+                {
+                    throw new ArgumentException(
+                        $"Invalid ENSDF record in '{file}' at line {i + 1}: " +
+                        $"expected at least 80 characters, but got {line.Length}.");
+                }
+
+                records.Add(
+                    RecognizePattern(
+                        ParseId(line.Substring(0, 5)),
+                        ParseRecType(line.Substring(5, 4)),
+                        line));
             }
+
+            if (records.Count > 0)
+            {
+                sets.Add(new DataSet(records[0].Id, records, file));
+            }
+
             return sets;
         }
 
         static Identifier ParseId(string nucid)
         {
-            string number = "";
-            foreach (char c in nucid) if (c >= 48 && c <= 57) number += c;
-            nucid = nucid.Replace(" ", "");
-            nucid = nucid.Replace(number, "");
-            return new Identifier() { Isotrope = byte.Parse(number), Name = nucid };
+            return new Identifier()
+            {
+                Isotrope = nucid[..3].Trim(),
+                Name = nucid[3..5].Trim()
+            };
         }
 
         static RecordType ParseRecType(string rtype)
@@ -46,7 +69,7 @@ namespace ENSDF_Parser
         static Record RecognizePattern(Identifier id, RecordType rtype, string line)
         {
             // END record: all 80 columns blank
-            if (string.IsNullOrWhiteSpace(line)) return new Record(id, rtype);
+            if (string.IsNullOrWhiteSpace(line)) return new Record(id, rtype, line);
 
             // Comment record:
             // col 7 = C/D/T/c/t
@@ -103,7 +126,7 @@ namespace ENSDF_Parser
                 case 'H': return new HistoryRecord(id, rtype, line);
 
                 default:
-                    return new Record(id, rtype);
+                    return new Record(id, rtype, line);
             }
         }
     }

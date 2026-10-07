@@ -7,19 +7,22 @@ using ENSDF_Parser.MetaData;
 
 namespace ENSDF_Parser.Records
 {
-    public class ParentRecord : Record
+    public class LevelRecord : Record
     {
-        public ParentRecord(Identifier id, RecordType rtype, string line)
-            : base(id, rtype)
+        public LevelRecord(Identifier id, RecordType rtype, string line)
+            : base(id, rtype, line)
         {
             E = line.Substring(9, 10);
             DE = line.Substring(19, 2);
             J = line.Substring(21, 18);
             T = line.Substring(39, 10);
             DT = line.Substring(49, 6);
-            QP = line.Substring(64, 10);
-            DQP = line.Substring(74, 2);
-            ION = line.Substring(76, 4);
+            L = line.Substring(55, 9);
+            S = line.Substring(64, 10);
+            DS = line.Substring(74, 2);
+            FLAG = line.Substring(76, 1);
+            MS = line.Substring(77, 2);
+            Q = line.Substring(79, 1);
         }
 
         private string e;
@@ -57,39 +60,62 @@ namespace ENSDF_Parser.Records
             set => dt = value.Trim();
         }
 
-        private string qp;
-        public string QP
+        private string l;
+        public string L
         {
-            get => qp;
-            set => qp = value.Trim();
+            get => l;
+            set => l = value.Trim();
         }
 
-        private string dqp;
-        public string DQP
+        private string s;
+        public string S
         {
-            get => dqp;
-            set => dqp = value.Trim();
+            get => s;
+            set => s = value.Trim();
         }
 
-        private string ion;
-        public string ION
+        private string ds;
+        public string DS
         {
-            get => ion;
-            set => ion = value.Trim();
+            get => ds;
+            set => ds = value.Trim();
+        }
+
+        private string flag;
+        public string FLAG
+        {
+            get => flag;
+            set => flag = value.Trim();
+        }
+
+        private string ms;
+        public string MS
+        {
+            get => ms;
+            set => ms = value.Trim();
+        }
+
+        private string q;
+        public string Q
+        {
+            get => q;
+            set => q = value.Trim();
         }
 
         public override string ToString()
         {
-            return base.ToString()
+            return $"{Id}{RType}"
                 + FormatToNChars(E, 10)
                 + FormatToNChars(DE, 2)
                 + FormatToNChars(J, 18)
                 + FormatToNChars(T, 10)
                 + FormatToNChars(DT, 6)
-                + new string(' ', 9)
-                + FormatToNChars(QP, 10)
-                + FormatToNChars(DQP, 2)
-                + FormatToNChars(ION, 4);
+                + FormatToNChars(L, 9)
+                + FormatToNChars(S, 10)
+                + FormatToNChars(DS, 2)
+                + FormatToNChars(FLAG, 1)
+                + FormatToNChars(MS, 2)
+                + FormatToNChars(Q, 1);
         }
     }
 }
